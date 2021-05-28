@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import nextId from "react-id-generator";
 import rick from "./img/Rick_Sanchez2.jpg"
 import morty from "./img/Morty_Smith.png"
@@ -18,23 +18,60 @@ function GameContainer() {
   const [bestScore, setBestScore] = useState(0);
   const [cards, setCards] = useState(
     [
-      { id: nextId(), imageUrl: rick, name: "Rick Sanchez" },
-      { id: nextId(), imageUrl: morty, name: "Morty Smith" },
-      { id: nextId(), imageUrl: jerry, name: "Jerry Smith" },
-      { id: nextId(), imageUrl: summer, name: "Summer Smith" },
-      { id: nextId(), imageUrl: beth, name: "Beth Smith" },
-      { id: nextId(), imageUrl: jessica, name: "Jessica" },
-      { id: nextId(), imageUrl: principal, name: "Principal Gene Vagina" },
-      { id: nextId(), imageUrl: goldenfold, name: "Mr. Goldenfold" },
-      { id: nextId(), imageUrl: birdperson, name: "Ethan" },
-      { id: nextId(), imageUrl: squanchy, name: "MC Haps" },
-      { id: nextId(), imageUrl: brad, name: "Brad" },
-      { id: nextId(), imageUrl: nancy, name: "Nancy" },    
+      { id: nextId(), imageUrl: rick, name: "Rick Sanchez", clicked: false },
+      { id: nextId(), imageUrl: morty, name: "Morty Smith", clicked: false },
+      { id: nextId(), imageUrl: jerry, name: "Jerry Smith", clicked: false },
+      { id: nextId(), imageUrl: summer, name: "Summer Smith", clicked: false },
+      { id: nextId(), imageUrl: beth, name: "Beth Smith", clicked: false },
+      { id: nextId(), imageUrl: jessica, name: "Jessica", clicked: false },
+      { id: nextId(), imageUrl: principal, name: "Principal Gene Vagina", clicked: false },
+      { id: nextId(), imageUrl: goldenfold, name: "Mr. Goldenfold", clicked: false },
+      { id: nextId(), imageUrl: birdperson, name: "Birdperson", clicked: false },
+      { id: nextId(), imageUrl: squanchy, name: "Squanchy", clicked: false },
+      { id: nextId(), imageUrl: brad, name: "Brad", clicked: false },
+      { id: nextId(), imageUrl: nancy, name: "Nancy", clicked: false },    
     ]);
 
+  function handleShuffleCards(cardId) {
+    setCards( [...shuffle(cards)] ) 
+    let newCards = cards;
+    cards.forEach(function(card, index) {
+      if (card.id == cardId) {
+        if (card.clicked === false) {
+          setScore( score + 1 );
+          if (score == bestScore) {
+            setBestScore(bestScore + 1);
+          }
+        } else {
+          setScore( 0 );
+          resetGane();
+        }
+        newCards[index].clicked = true
+        setCards( [...newCards] )
+      }
+    })
+  }
+
+  function resetGane(newCards) {
+    newCards = cards;
+    newCards.forEach(function setTofalse(card) {
+      card.clicked = false;
+    })
+    setCards([...newCards]);
+  }
+
+  function shuffle(arr) {
+    let newArr = arr;
+    return newArr.sort(()=> Math.random() - 0.5)
+  }
+  
   return (
     <div>
-      <CardsList cards={cards}/>
+      <div>
+        <span>Score: {score}</span><br/>
+        <span>Best Score: {bestScore}</span>
+      </div>
+      <CardsList cards={cards} shuffleCards={handleShuffleCards}/>
     </div>
   )
 }
@@ -42,7 +79,11 @@ function GameContainer() {
 function CardsList(props) {
 
   let cardItems = props.cards.map((card) => {
-    return <CardItem imageUrl={card.imageUrl} name={card.name} alt={card.name} key={card.id}/>
+    return <CardItem imageUrl={card.imageUrl} 
+                     name={card.name} 
+                     alt={card.name} 
+                     key={card.id} 
+                     shuffleCards={() => props.shuffleCards(card.id)}/>
   });
   
   return (
@@ -54,10 +95,8 @@ function CardsList(props) {
 
 
 function CardItem(props) {
-
-  console.log(props.imageUrl)
   return (
-    <li key={props.key}> 
+    <li key={props.key} onClick={() => props.shuffleCards()}> 
       <div
         style={{
           backgroundImage: `url(${props.imageUrl})`,
