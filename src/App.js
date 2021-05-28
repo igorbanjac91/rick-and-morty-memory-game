@@ -4,7 +4,8 @@ import GameContainer from "./GameContainer";
 function App() {
   return (
     <div className="App">
-      <h1>Rick and Morty Card Memory</h1>
+      <h1>Rick and Morty</h1>
+      <h2>Memory Card</h2>
       <GameContainer />
     </div>
   );

@@ -32,10 +32,10 @@ function GameContainer() {
       { id: nextId(), imageUrl: nancy, name: "Nancy", clicked: false },    
     ]);
 
-  function handleShuffleCards(cardId) {
+  function handleGuess(cardId) {
     setCards( [...shuffle(cards)] ) 
     let newCards = cards;
-    cards.forEach(function(card, index) {
+    cards.forEach(function checkGuessing(card, index) {
       if (card.id == cardId) {
         if (card.clicked === false) {
           setScore( score + 1 );
@@ -67,11 +67,11 @@ function GameContainer() {
   
   return (
     <div>
-      <div>
+      <div className="score">
         <span>Score: {score}</span><br/>
         <span>Best Score: {bestScore}</span>
       </div>
-      <CardsList cards={cards} shuffleCards={handleShuffleCards}/>
+      <CardsList cards={cards} guessCard={handleGuess}/>
     </div>
   )
 }
@@ -83,7 +83,7 @@ function CardsList(props) {
                      name={card.name} 
                      alt={card.name} 
                      key={card.id} 
-                     shuffleCards={() => props.shuffleCards(card.id)}/>
+                     guessCard={() => props.guessCard(card.id)}/>
   });
   
   return (
@@ -96,7 +96,7 @@ function CardsList(props) {
 
 function CardItem(props) {
   return (
-    <li key={props.key} onClick={() => props.shuffleCards()}> 
+    <li key={props.key} onClick={() => props.guessCard()}> 
       <div
         style={{
           backgroundImage: `url(${props.imageUrl})`,
